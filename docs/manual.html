@@ -1,0 +1,4409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chama System — Complete User Manual</title>
+<style>
+  @media print {
+    @page { margin: 1.5cm; size: A4; }
+    body { font-size: 10pt; }
+    .page-break { page-break-before: always; }
+    nav { display: none; }
+    h1 { page-break-before: always; }
+    h1:first-of-type { page-break-before: avoid; }
+    h2 { page-break-after: avoid; }
+    h3, h4 { page-break-after: avoid; }
+    table { page-break-inside: auto; }
+    tr { page-break-inside: avoid; }
+    pre { page-break-inside: avoid; }
+  }
+  @media screen {
+    body { max-width: 900px; margin: 2em auto; padding: 0 2em; }
+  }
+  body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #222;
+  }
+  h1 { font-size: 2em; color: #1a365d; border-bottom: 2px solid #2b6cb0; padding-bottom: 0.3em; margin-top: 1.5em; }
+  h2 { font-size: 1.5em; color: #2b6cb0; margin-top: 1.2em; }
+  h3 { font-size: 1.2em; color: #2d3748; margin-top: 1em; }
+  h4 { font-size: 1.1em; color: #4a5568; }
+  table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: 0.95em; }
+  th, td { border: 1px solid #cbd5e0; padding: 0.4em 0.6em; text-align: left; }
+  th { background: #edf2f7; font-weight: 600; }
+  tr:nth-child(even) td { background: #f7fafc; }
+  code { background: #edf2f7; padding: 0.1em 0.3em; border-radius: 3px; font-size: 0.9em; }
+  pre { background: #2d3748; color: #e2e8f0; padding: 1em; border-radius: 5px; overflow-x: auto; }
+  pre code { background: transparent; color: inherit; }
+  ul { padding-left: 1.5em; }
+  li { margin: 0.3em 0; }
+  strong { color: #1a202c; }
+  .cover {
+    text-align: center;
+    padding: 4em 0 2em;
+    border-bottom: 3px solid #2b6cb0;
+    margin-bottom: 2em;
+  }
+  .cover h1 { font-size: 2.5em; border: none; margin: 0.5em 0; }
+  .cover .meta { color: #718096; font-size: 1.1em; }
+  .toc { columns: 2; column-gap: 2em; margin: 1em 0; }
+  .toc a { display: block; padding: 0.2em 0; color: #2b6cb0; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .header-link { float: right; font-size: 0.6em; color: #cbd5e0; text-decoration: none; }
+  .header-link:hover { color: #2b6cb0; }
+  .badge { display: inline-block; padding: 0.1em 0.4em; border-radius: 3px; font-size: 0.85em; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>Chama System</h1>
+  <p class="meta">Complete User Manual</p>
+  <p class="meta">Version 1.0 &mdash; July 2026</p>
+  <p class="meta"><code>http://localhost/chama-system/</code></p>
+</div>
+
+<nav>
+  <h2>Table of Contents</h2>
+  <div class="toc">
+    <a href="#system-overview">System Overview</a>
+    <a href="#quick-start">Quick Start Guide</a>
+    <a href="#role-based-access">Role-Based Access</a>
+    <a href="#security-model">Security Model</a>
+    <a href="#database-schema">Database Schema</a>
+    <strong>Modules:</strong>
+    <a href="#module-dashboard">Dashboard</a>
+    <a href="#module-members">Members</a>
+    <a href="#module-users">Users</a>
+    <a href="#module-meetings">Meetings</a>
+    <a href="#module-contributions">Contributions</a>
+    <a href="#module-loans">Loans</a>
+    <a href="#module-share-products">Share Products</a>
+    <a href="#module-share-purchases">Share Purchases</a>
+    <a href="#module-dividends">Dividends</a>
+    <a href="#module-accounting---income">Accounting - Income</a>
+    <a href="#module-accounting---expenses">Accounting - Expenses</a>
+    <a href="#module-accounting---journal">Accounting - Journal</a>
+    <a href="#module-accounting---ledger">Accounting - Ledger</a>
+    <a href="#module-accounting---trial-balance">Accounting - Trial Balance</a>
+    <a href="#module-reports">Reports</a>
+    <a href="#module-settings">Settings</a>
+    <a href="#module-audit-logs">Audit Logs</a>
+    <a href="#module-contact-messages">Contact Messages</a>
+    <a href="#module-profile">Profile</a>
+    <a href="#troubleshooting">Troubleshooting</a>
+  </div>
+</nav>
+
+<!-- System Overview -->
+<div class="page-break"></div>
+<h2>System Overview</h2>
+1. System Overview</p><p>Chama System is a web-based group management platform for chamas (investment groups). It manages members, contributions, loans, shares, dividends, meetings, and accounting.</p><h3>Technology Stack</h3>
+<ul><li><strong>Backend:</strong> PHP 8.x (PDO/MySQL)</li>
+<li><strong>Frontend:</strong> Bootstrap 5.3, jQuery 3.7, DataTables 2.x, Font Awesome 6, Select2</li>
+<li><strong>Database:</strong> MySQL 5.7+ / MariaDB 10.3+</li>
+<li><strong>Session:</strong> PHP native sessions with CSRF protection</li>
+</ul>
+<h3>Key Features</h3>
+<ul><li>Role-based access control (9 roles)</li>
+<li>Multi-group isolation via <code>group_code</code></li>
+<li>Member-user one-to-one integrity</li>
+<li>Automated share certificate generation</li>
+<li>Dividend declaration with auto-payment creation</li>
+<li>Full accounting module (double-entry)</li>
+<li>DataTables with server-side processing</li>
+<li>CSRF protection on all forms + AJAX</li>
+</ul>
+---</p><p></p>
+<!-- Quick Start -->
+<div class="page-break"></div>
+<h2>Quick Start Guide</h2></p><h1>Quick Start Guide</h1></p><h2>System Access</h2>
+<ul><li><strong>URL:</strong> <code>http://localhost/chama-system/</code></li>
+<li><strong>Super Admin:</strong> jacksonlopito@gmail.com / admin123 / CHAMA001</li>
+</ul>
+<h2>First-Time Admin Tasks</h2></p><h3>1. Configure System</h3>
+Navigate to <strong>Settings</strong> → configure:
+<ul><li>General: Group name, code, currency</li>
+<li>Email: SMTP settings (required for all email features)</li>
+<li>Security: Password policy, session timeout</li>
+</ul>
+<h3>2. Add Members</h3>
+Navigate to <strong>Members</strong> → <strong>Add Member</strong>
+<ul><li>Fill personal + contact details</li>
+<li>Save → status = 'active'</li>
+</ul>
+<h3>3. Approve Members (if registration used)</h3>
+1. Go to <strong>Members</strong>
+2. Find member with status = 'pending_approval'
+3. Click <strong>Approve</strong>
+4. Enter password + confirm password
+5. System creates user account automatically</p><h3>4. Create User Accounts</h3>
+Navigate to <strong>Users</strong> → <strong>Add User</strong>
+<ul><li>Link to existing member (optional)</li>
+<li>Assign role</li>
+</ul>
+<h3>5. Set Up Share Products</h3>
+Navigate to <strong>Share Products</strong> → <strong>Add Product</strong>
+<ul><li>Define name, price, max per member</li>
+</ul>
+<h3>6. Record First Meeting</h3>
+Navigate to <strong>Meetings</strong> → <strong>Schedule Meeting</strong></p><h2>Daily Operations</h2></p><h3>Recording Contributions</h3>
+1. Go to <strong>Contributions</strong>
+2. Click <strong>Record Contribution</strong>
+3. Select member, enter amount, payment method
+4. Save</p><h3>Processing Loans</h3>
+1. Go to <strong>Loans</strong>
+2. Click <strong>Apply</strong> → fill details
+3. <strong>Approve</strong> → <strong>Disburse</strong>
+4. Record repayments as they come</p><h3>Buying Shares</h3>
+1. Go to <strong>Shares → Purchases</strong>
+2. Click <strong>Buy Shares</strong>
+3. Select member, product, quantity
+4. Certificate auto-generated</p><h3>Declaring Dividends</h3>
+1. Go to <strong>Shares → Dividends</strong>
+2. Click <strong>Declare Dividend</strong>
+3. Select product, per-share amount, financial year
+4. Payment records auto-created
+5. Click <strong>Pay</strong> to mark all as paid</p><h2>Common Workflows</h2></p><h3>Member Registration → Login (Full Flow)</h3>
+1. Member registers at <code>register.php</code>
+2. Verification email sent (requires SMTP)
+3. Member verifies email → status = 'email_verified'
+4. Admin approves member in Members → approves with password
+5. System creates user + sends credentials email
+6. Member logs in with credentials</p><h3>End-of-Month Accounting</h3>
+1. Record all income (Accounting → Income)
+2. Record all expenses (Accounting → Expenses)
+3. Post journal entries if needed (Accounting → Journal)
+4. Run Trial Balance (Accounting → Trial Balance)
+5. Generate reports (Reports menu)</p><h2>Role-Specific Guides</h2></p><h3>Super Admin</h3>
+<ul><li>Full access to everything</li>
+<li>Start with Settings configuration</li>
+<li>Create other admin users</li>
+<li>Monitor audit logs</li>
+</ul>
+<h3>Treasurer</h3>
+<ul><li>Manage contributions, loans, accounting</li>
+<li>Declare dividends, manage shares</li>
+<li>Generate financial reports</li>
+</ul>
+<h3>Secretary</h3>
+<ul><li>Schedule meetings, record minutes</li>
+<li>Manage member records</li>
+<li>Track attendance</li>
+</ul>
+<h3>Member</h3>
+<ul><li>Update profile</li>
+<li>View own contributions and shares</li>
+<li>Buy shares (if enabled)</li>
+<li>View loan status</li>
+</ul>
+<h3>Auditor</h3>
+<ul><li>View all reports (read-only)</li>
+<li>View audit logs</li>
+<li>Review trial balance</li>
+</ul></p>
+<!-- Role-Based Access -->
+<div class="page-break"></div>
+<h2>Role-Based Access</h2>
+3. Role-Based Access</p><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>ID</th>
+<th>Access Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Super Admin</td>
+<td>1</td>
+<td>Full system access, all modules</td>
+</tr>
+<tr>
+<td>Admin</td>
+<td>2</td>
+<td>All modules except system settings</td>
+</tr>
+<tr>
+<td>Chairperson</td>
+<td>3</td>
+<td>Read + approve, no financial edits</td>
+</tr>
+<tr>
+<td>Secretary</td>
+<td>4</td>
+<td>Create/edit meetings, member records</td>
+</tr>
+<tr>
+<td>Treasurer</td>
+<td>5</td>
+<td>Contributions, loans, accounting</td>
+</tr>
+<tr>
+<td>Loan Officer</td>
+<td>6</td>
+<td>Loan processing only</td>
+</tr>
+<tr>
+<td>Member</td>
+<td>7</td>
+<td>Own profile, contributions, shares</td>
+</tr>
+<tr>
+<td>Auditor</td>
+<td>8</td>
+<td>Read-only for all modules</td>
+</tr>
+<tr>
+<td>Guest</td>
+<td>9</td>
+<td>Minimal public access</td>
+</tr>
+</tbody>
+</table></p><h3>Permission Matrix</h3>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Super Admin</th>
+<th>Admin</th>
+<th>Chair</th>
+<th>Sec</th>
+<th>Treas</th>
+<th>Loan Off</th>
+<th>Member</th>
+<th>Auditor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Manage Members</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Manage Users</td>
+<td>✓</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Manage Meetings</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Manage Contributions</td>
+<td>✓</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Manage Loans</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>-</td>
+<td>✓</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Manage Accounting</td>
+<td>✓</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Manage Shares</td>
+<td>✓</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Manage Settings</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>View Reports</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>-</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>View Audit Logs</td>
+<td>✓</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Approve Members</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody>
+</table></p><p>---</p><p></p>
+<!-- Security Model -->
+<div class="page-break"></div>
+<h2>Security Model</h2></p><h1>Security Model</h1></p><h2>Authentication</h2></p><h3>Login Flow</h3>
+1. User submits email + password + group_code via <code>login.php</code>
+2. <code>authenticateUser()</code> in <code>includes/auth.php</code>:
+   - Checks login attempt limits
+   - Queries <code>users</code> by email + group_code
+   - Verifies user status = 'active'
+   - Checks linked member status (if member_id exists)
+   - Verifies password with <code>password_verify()</code>
+   - On success: creates session, updates last_login, logs audit
+3. <code>createUserSession()</code> stores user_id, role_id, role_slug, member data in <code>$_SESSION</code></p><h3>Password Security</h3>
+<ul><li>Hashed with <code>password_hash(PASSWORD_DEFAULT)</code> → bcrypt</li>
+<li>Minimum length enforced (configurable in Settings)</li>
+<li>Login attempt limiting with lockout</li>
+<li>No plaintext storage ever</li>
+</ul>
+<h2>Authorization</h2></p><h3>Role System</h3>
+<ul><li>9 roles in <code>roles</code> table</li>
+<li>Permissions assigned via <code>role_permissions</code> bridge table</li>
+<li><code>hasPermission($slug)</code> checks Super Admin bypass (role_id = 1)</li>
+<li><code>requirePermission($slug)</code> redirects or returns 403 AJAX response</li>
+</ul>
+<h3>Permission Verification Flow</h3>
+<pre><code>Controller → requirePermission('manage_members')
+  → isLoggedIn() check
+  → hasPermission() checks role_permissions table
+  → Super Admin auto-passes (role_id = 1)
+  → Deny → redirect to access-denied.php or 403 JSON
+</code></pre></p><h2>CSRF Protection</h2></p><h3>Implementation</h3>
+<ul><li>Every form includes <code><input type="hidden" name="csrf_token"></code></li>
+<li><code>generateCsrf()</code> creates token stored in <code>$_SESSION['csrf_token']</code></li>
+<li><code>verifyCsrf($token)</code> compares against session + regenerates on success</li>
+<li><code>jsonResponse()</code> includes <code>csrf_token</code> in every AJAX response</li>
+<li>DOM tokens refreshed from AJAX responses via <code>settings.php</code> JS</li>
+</ul>
+<h3>Token Handling</h3>
+<ul><li>Token regenerated after each successful verification</li>
+<li>Prevents replay attacks</li>
+<li>DOM updated with new token from every JSON response</li>
+</ul>
+<h2>SQL Injection Prevention</h2>
+<ul><li>All database queries use PDO prepared statements with parameterized queries</li>
+<li>No string concatenation in SQL</li>
+<li>PDO <code>EMULATE_PREPARES = false</code> for real prepared statements</li>
+</ul>
+<h2>Session Security</h2>
+<table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HttpOnly</td>
+<td><code>session.cookie_httponly = 1</code></td>
+</tr>
+<tr>
+<td>Secure</td>
+<td>On HTTPS only</td>
+</tr>
+<tr>
+<td>SameSite</td>
+<td><code>Strict</code></td>
+</tr>
+<tr>
+<td>Timeout</td>
+<td>Configurable (default 3600s)</td>
+</tr>
+<tr>
+<td>Regenerate ID</td>
+<td>On login</td>
+</tr>
+<tr>
+<td>Lockout</td>
+<td>After max failed attempts</td>
+</tr>
+</tbody>
+</table></p><h2>File Upload Security</h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Extension whitelist</td>
+<td>jpg, jpeg, png, gif, pdf, doc, docx</td>
+</tr>
+<tr>
+<td>Max size</td>
+<td>Configurable (default 2MB)</td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>Outside webroot in <code>uploads/</code></td>
+</tr>
+<tr>
+<td>Rename</td>
+<td>Randomized filename on save</td>
+</tr>
+</tbody>
+</table></p><h2>Headers</h2>
+<pre><code>header('X-Frame-Options: DENY');
+header('X-Content-Type-Options: nosniff');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+</code></pre></p><h2>Audit Trail</h2>
+<ul><li>All CRUD operations logged via <code>logAudit()</code> to <code>audit_logs</code> table</li>
+<li>Captures: user, action, module, record_id, old/new values (JSON), IP, user agent</li>
+<li>Login/logout events tracked</li>
+<li>Immutable — no delete UI for audit logs</li>
+</ul></p>
+<!-- Database Schema -->
+<div class="page-break"></div>
+<h2>Database Schema</h2></p><h1>Database Schema</h1></p><strong>Database:</strong> <code>chama_system</code>  
+<strong>Engine:</strong> InnoDB (all tables)  
+<strong>Charset:</strong> utf8mb4  </p><h2>Tables (52+)</h2></p><h3>Core Tables</h3></p><h4><code>users</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+<td></td>
+</tr>
+<tr>
+<td>role_id</td>
+<td>int(11) FK</td>
+<td>→ roles.id</td>
+</tr>
+<tr>
+<td>member_id</td>
+<td>int(11) FK NULL</td>
+<td>→ members.id (unique, ON DELETE SET NULL)</td>
+</tr>
+<tr>
+<td>username</td>
+<td>varchar(100)</td>
+<td>Unique</td>
+</tr>
+<tr>
+<td>email</td>
+<td>varchar(255)</td>
+<td>Unique</td>
+</tr>
+<tr>
+<td>password</td>
+<td>varchar(255)</td>
+<td>password_hash() bcrypt</td>
+</tr>
+<tr>
+<td>group_code</td>
+<td>varchar(20)</td>
+<td>Multi-group isolation</td>
+</tr>
+<tr>
+<td>phone</td>
+<td>varchar(20)</td>
+<td></td>
+</tr>
+<tr>
+<td>photo</td>
+<td>varchar(255)</td>
+<td></td>
+</tr>
+<tr>
+<td>status</td>
+<td>enum</td>
+<td>active/inactive/suspended</td>
+</tr>
+<tr>
+<td>is_verified</td>
+<td>tinyint(1)</td>
+<td>Email verified</td>
+</tr>
+<tr>
+<td>last_login</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+<tr>
+<td>login_attempts</td>
+<td>int(11)</td>
+<td></td>
+</tr>
+<tr>
+<td>locked_until</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+<tr>
+<td>remember_token</td>
+<td>varchar(255)</td>
+<td></td>
+</tr>
+<tr>
+<td>two_factor_secret</td>
+<td>varchar(255)</td>
+<td></td>
+</tr>
+<tr>
+<td>two_factor_enabled</td>
+<td>tinyint(1)</td>
+<td></td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+</tbody>
+</table></p><h4><code>roles</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+<td></td>
+</tr>
+<tr>
+<td>name</td>
+<td>varchar(50)</td>
+<td>Super Admin, Admin, etc.</td>
+</tr>
+<tr>
+<td>slug</td>
+<td>varchar(50)</td>
+<td>super_admin, admin, etc.</td>
+</tr>
+<tr>
+<td>description</td>
+<td>text</td>
+<td></td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+</tbody>
+</table></p><h4><code>members</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+<td></td>
+</tr>
+<tr>
+<td>member_no</td>
+<td>varchar(50)</td>
+<td>Auto-generated</td>
+</tr>
+<tr>
+<td>first_name</td>
+<td>varchar(100)</td>
+<td></td>
+</tr>
+<tr>
+<td>last_name</td>
+<td>varchar(100)</td>
+<td></td>
+</tr>
+<tr>
+<td>email</td>
+<td>varchar(255)</td>
+<td></td>
+</tr>
+<tr>
+<td>phone</td>
+<td>varchar(20)</td>
+<td></td>
+</tr>
+<tr>
+<td>id_number</td>
+<td>varchar(50)</td>
+<td></td>
+</tr>
+<tr>
+<td>date_of_birth</td>
+<td>date</td>
+<td></td>
+</tr>
+<tr>
+<td>gender</td>
+<td>enum</td>
+<td>Male/Female/Other</td>
+</tr>
+<tr>
+<td>photo</td>
+<td>varchar(255)</td>
+<td></td>
+</tr>
+<tr>
+<td>county_id</td>
+<td>int(11) FK</td>
+<td></td>
+</tr>
+<tr>
+<td>sub_county_id</td>
+<td>int(11) FK</td>
+<td></td>
+</tr>
+<tr>
+<td>ward_id</td>
+<td>int(11) FK</td>
+<td></td>
+</tr>
+<tr>
+<td>constituency</td>
+<td>varchar(100)</td>
+<td></td>
+</tr>
+<tr>
+<td>postal_address</td>
+<td>varchar(255)</td>
+<td></td>
+</tr>
+<tr>
+<td>emergency_contact</td>
+<td>varchar(255)</td>
+<td></td>
+</tr>
+<tr>
+<td>group_code</td>
+<td>varchar(20)</td>
+<td>Multi-group</td>
+</tr>
+<tr>
+<td>join_date</td>
+<td>date</td>
+<td></td>
+</tr>
+<tr>
+<td>status</td>
+<td>enum</td>
+<td>draft/pending_verification/email_verified/pending_approval/active/suspended/terminated</td>
+</tr>
+<tr>
+<td>created_by</td>
+<td>int(11) FK NULL</td>
+<td>→ users.id</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+</tbody>
+</table></p><h4><code>permissions</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+<td></td>
+</tr>
+<tr>
+<td>name</td>
+<td>varchar(100)</td>
+<td></td>
+</tr>
+<tr>
+<td>slug</td>
+<td>varchar(100)</td>
+<td>Unique</td>
+</tr>
+<tr>
+<td>module</td>
+<td>varchar(50)</td>
+<td></td>
+</tr>
+<tr>
+<td>description</td>
+<td>text</td>
+<td></td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+</tbody>
+</table></p><h4><code>role_permissions</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+<td></td>
+</tr>
+<tr>
+<td>role_id</td>
+<td>int(11) FK</td>
+<td>→ roles.id</td>
+</tr>
+<tr>
+<td>permission_id</td>
+<td>int(11) FK</td>
+<td>→ permissions.id</td>
+</tr>
+</tbody>
+</table></p><h3>Shares Module</h3></p><h4><code>share_products</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+<td></td>
+</tr>
+<tr>
+<td>name</td>
+<td>varchar(200)</td>
+<td></td>
+</tr>
+<tr>
+<td>description</td>
+<td>text</td>
+<td></td>
+</tr>
+<tr>
+<td>price_per_share</td>
+<td>decimal(10,2)</td>
+<td></td>
+</tr>
+<tr>
+<td>max_per_member</td>
+<td>int(11)</td>
+<td></td>
+</tr>
+<tr>
+<td>total_sold</td>
+<td>int(11)</td>
+<td>Default 0</td>
+</tr>
+<tr>
+<td>status</td>
+<td>enum</td>
+<td>active/inactive</td>
+</tr>
+<tr>
+<td>group_code</td>
+<td>varchar(20)</td>
+<td>Multi-group</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+</tbody>
+</table></p><h4><code>share_purchases</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+<td></td>
+</tr>
+<tr>
+<td>certificate_no</td>
+<td>varchar(50)</td>
+<td>CERT-YYYY-NNNN</td>
+</tr>
+<tr>
+<td>member_id</td>
+<td>int(11) FK</td>
+<td></td>
+</tr>
+<tr>
+<td>product_id</td>
+<td>int(11) FK</td>
+<td>→ share_products.id</td>
+</tr>
+<tr>
+<td>quantity</td>
+<td>int(11)</td>
+<td></td>
+</tr>
+<tr>
+<td>total_amount</td>
+<td>decimal(12,2)</td>
+<td></td>
+</tr>
+<tr>
+<td>purchase_date</td>
+<td>date</td>
+<td></td>
+</tr>
+<tr>
+<td>payment_method</td>
+<td>varchar(50)</td>
+<td></td>
+</tr>
+<tr>
+<td>payment_reference</td>
+<td>varchar(255)</td>
+<td></td>
+</tr>
+<tr>
+<td>status</td>
+<td>enum</td>
+<td>active/cancelled</td>
+</tr>
+<tr>
+<td>group_code</td>
+<td>varchar(20)</td>
+<td></td>
+</tr>
+<tr>
+<td>notes</td>
+<td>text</td>
+<td></td>
+</tr>
+<tr>
+<td>created_by</td>
+<td>int(11) FK</td>
+<td></td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+</tbody>
+</table></p><h4><code>dividends</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+<td></td>
+</tr>
+<tr>
+<td>product_id</td>
+<td>int(11) FK</td>
+<td>→ share_products.id</td>
+</tr>
+<tr>
+<td>per_share_amount</td>
+<td>decimal(10,2)</td>
+<td></td>
+</tr>
+<tr>
+<td>total_amount</td>
+<td>decimal(12,2)</td>
+<td></td>
+</tr>
+<tr>
+<td>financial_year</td>
+<td>varchar(20)</td>
+<td></td>
+</tr>
+<tr>
+<td>status</td>
+<td>enum</td>
+<td>declared/paid/cancelled</td>
+</tr>
+<tr>
+<td>group_code</td>
+<td>varchar(20)</td>
+<td></td>
+</tr>
+<tr>
+<td>declared_by</td>
+<td>int(11) FK</td>
+<td></td>
+</tr>
+<tr>
+<td>declared_at</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+<tr>
+<td>paid_at</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+</tbody>
+</table></p><h4><code>dividend_payments</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+<td></td>
+</tr>
+<tr>
+<td>dividend_id</td>
+<td>int(11) FK</td>
+<td>→ dividends.id</td>
+</tr>
+<tr>
+<td>member_id</td>
+<td>int(11) FK</td>
+<td></td>
+</tr>
+<tr>
+<td>share_purchase_id</td>
+<td>int(11) FK</td>
+<td></td>
+</tr>
+<tr>
+<td>shares_owned</td>
+<td>int(11)</td>
+<td></td>
+</tr>
+<tr>
+<td>amount_due</td>
+<td>decimal(12,2)</td>
+<td></td>
+</tr>
+<tr>
+<td>status</td>
+<td>enum</td>
+<td>pending/paid/cancelled</td>
+</tr>
+<tr>
+<td>paid_at</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+<td></td>
+</tr>
+</tbody>
+</table></p><h3>Accounting Module</h3></p><h4><code>chart_of_accounts</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+</tr>
+<tr>
+<td>account_code</td>
+<td>varchar(20)</td>
+</tr>
+<tr>
+<td>account_name</td>
+<td>varchar(200)</td>
+</tr>
+<tr>
+<td>account_type</td>
+<td>enum (asset/liability/equity/income/expense)</td>
+</tr>
+<tr>
+<td>parent_id</td>
+<td>int(11) FK NULL</td>
+</tr>
+<tr>
+<td>is_active</td>
+<td>tinyint(1)</td>
+</tr>
+<tr>
+<td>group_code</td>
+<td>varchar(20)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+</tr>
+</tbody>
+</table></p><h4><code>journal_entries</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+</tr>
+<tr>
+<td>entry_date</td>
+<td>date</td>
+</tr>
+<tr>
+<td>description</td>
+<td>text</td>
+</tr>
+<tr>
+<td>status</td>
+<td>enum (draft/posted/cancelled)</td>
+</tr>
+<tr>
+<td>created_by</td>
+<td>int(11) FK</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+</tr>
+</tbody>
+</table></p><h4><code>journal_entry_lines</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+</tr>
+<tr>
+<td>journal_entry_id</td>
+<td>int(11) FK</td>
+</tr>
+<tr>
+<td>account_id</td>
+<td>int(11) FK</td>
+</tr>
+<tr>
+<td>debit</td>
+<td>decimal(12,2)</td>
+</tr>
+<tr>
+<td>credit</td>
+<td>decimal(12,2)</td>
+</tr>
+<tr>
+<td>description</td>
+<td>text</td>
+</tr>
+</tbody>
+</table></p><h4><code>income_categories</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+</tr>
+<tr>
+<td>name</td>
+<td>varchar(100)</td>
+</tr>
+<tr>
+<td>description</td>
+<td>text</td>
+</tr>
+<tr>
+<td>group_code</td>
+<td>varchar(20)</td>
+</tr>
+</tbody>
+</table></p><h4><code>expense_categories</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+</tr>
+<tr>
+<td>name</td>
+<td>varchar(100)</td>
+</tr>
+<tr>
+<td>description</td>
+<td>text</td>
+</tr>
+<tr>
+<td>group_code</td>
+<td>varchar(20)</td>
+</tr>
+</tbody>
+</table></p><h3>Chama Operations</h3></p><h4><code>meetings</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+</tr>
+<tr>
+<td>title</td>
+<td>varchar(200)</td>
+</tr>
+<tr>
+<td>meeting_date</td>
+<td>date</td>
+</tr>
+<tr>
+<td>meeting_time</td>
+<td>time</td>
+</tr>
+<tr>
+<td>venue</td>
+<td>varchar(255)</td>
+</tr>
+<tr>
+<td>agenda</td>
+<td>text</td>
+</tr>
+<tr>
+<td>minutes</td>
+<td>text</td>
+</tr>
+<tr>
+<td>status</td>
+<td>enum (scheduled/ongoing/completed/cancelled)</td>
+</tr>
+<tr>
+<td>group_code</td>
+<td>varchar(20)</td>
+</tr>
+<tr>
+<td>created_by</td>
+<td>int(11) FK</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+</tr>
+</tbody>
+</table></p><h4><code>contributions</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+</tr>
+<tr>
+<td>member_id</td>
+<td>int(11) FK</td>
+</tr>
+<tr>
+<td>receipt_no</td>
+<td>varchar(50)</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>decimal(12,2)</td>
+</tr>
+<tr>
+<td>payment_method</td>
+<td>varchar(50)</td>
+</tr>
+<tr>
+<td>payment_date</td>
+<td>date</td>
+</tr>
+<tr>
+<td>reference</td>
+<td>varchar(255)</td>
+</tr>
+<tr>
+<td>notes</td>
+<td>text</td>
+</tr>
+<tr>
+<td>status</td>
+<td>enum (confirmed/pending/cancelled)</td>
+</tr>
+<tr>
+<td>group_code</td>
+<td>varchar(20)</td>
+</tr>
+<tr>
+<td>created_by</td>
+<td>int(11) FK</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+</tr>
+</tbody>
+</table></p><h4><code>loans</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+</tr>
+<tr>
+<td>member_id</td>
+<td>int(11) FK</td>
+</tr>
+<tr>
+<td>loan_no</td>
+<td>varchar(50)</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>decimal(12,2)</td>
+</tr>
+<tr>
+<td>interest_rate</td>
+<td>decimal(5,2)</td>
+</tr>
+<tr>
+<td>duration_months</td>
+<td>int(11)</td>
+</tr>
+<tr>
+<td>purpose</td>
+<td>text</td>
+</tr>
+<tr>
+<td>disbursement_date</td>
+<td>date</td>
+</tr>
+<tr>
+<td>repayment_method</td>
+<td>varchar(50)</td>
+</tr>
+<tr>
+<td>status</td>
+<td>enum (pending/approved/disbursed/repaying/fully_paid/defaulted/written_off)</td>
+</tr>
+<tr>
+<td>guarantor_id</td>
+<td>int(11) FK NULL</td>
+</tr>
+<tr>
+<td>balance</td>
+<td>decimal(12,2)</td>
+</tr>
+<tr>
+<td>group_code</td>
+<td>varchar(20)</td>
+</tr>
+<tr>
+<td>created_by</td>
+<td>int(11) FK</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+</tr>
+</tbody>
+</table></p><h3>System Tables</h3></p><h4><code>settings</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+</tr>
+<tr>
+<td>setting_key</td>
+<td>varchar(100) UNIQUE</td>
+</tr>
+<tr>
+<td>setting_value</td>
+<td>text</td>
+</tr>
+<tr>
+<td>group_code</td>
+<td>varchar(20)</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamp</td>
+</tr>
+</tbody>
+</table></p><h4><code>audit_logs</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>int(11) FK</td>
+</tr>
+<tr>
+<td>username</td>
+<td>varchar(100)</td>
+</tr>
+<tr>
+<td>action</td>
+<td>varchar(50)</td>
+</tr>
+<tr>
+<td>module</td>
+<td>varchar(50)</td>
+</tr>
+<tr>
+<td>record_id</td>
+<td>int(11)</td>
+</tr>
+<tr>
+<td>old_values</td>
+<td>longtext</td>
+</tr>
+<tr>
+<td>new_values</td>
+<td>longtext</td>
+</tr>
+<tr>
+<td>ip_address</td>
+<td>varchar(45)</td>
+</tr>
+<tr>
+<td>user_agent</td>
+<td>text</td>
+</tr>
+<tr>
+<td>group_code</td>
+<td>varchar(20)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+</tr>
+</tbody>
+</table></p><h4><code>contact_messages</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+</tr>
+<tr>
+<td>name</td>
+<td>varchar(100)</td>
+</tr>
+<tr>
+<td>email</td>
+<td>varchar(255)</td>
+</tr>
+<tr>
+<td>subject</td>
+<td>varchar(200)</td>
+</tr>
+<tr>
+<td>message</td>
+<td>text</td>
+</tr>
+<tr>
+<td>status</td>
+<td>enum (unread/read/replied)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+</tr>
+</tbody>
+</table></p><h4><code>notifications</code></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int(11) PK AI</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>int(11) FK</td>
+</tr>
+<tr>
+<td>title</td>
+<td>varchar(200)</td>
+</tr>
+<tr>
+<td>message</td>
+<td>text</td>
+</tr>
+<tr>
+<td>type</td>
+<td>varchar(50)</td>
+</tr>
+<tr>
+<td>is_read</td>
+<td>tinyint(1)</td>
+</tr>
+<tr>
+<td>link</td>
+<td>varchar(255)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamp</td>
+</tr>
+</tbody>
+</table></p><h4><code>counties</code>, <code>sub_counties</code>, <code>wards</code></h4>
+Location reference tables for Kenyan administrative divisions.</p><h4><code>homepage_content</code>, <code>hp_sections</code>, <code>hp_items</code></h4>
+Homepage CMS tables for dynamic content management.</p><h4><code>member_verification_tokens</code></h4>
+Email verification tokens for member registration flow.</p><h3>Full Table List</h3>
+<pre><code>accounting_journal_entries
+accounting_journal_entry_lines
+audit_logs
+chart_of_accounts
+contact_messages
+contributions
+counties
+dividend_payments
+dividends
+expense_categories
+homepage_content
+hp_items
+hp_sections
+income_categories
+journal_entries
+journal_entry_lines
+loan_repayments
+loans
+member_verification_tokens
+members
+meeting_attendance
+meetings
+notifications
+permissions
+role_permissions
+roles
+settings
+share_products
+share_purchases
+sub_counties
+users
+wards
+</code></pre>
+</p>
+<!-- Modules -->
+<div class="page-break"></div>
+<h1>Module Reference</h1>
+
+<div id="module-dashboard">
+  <h2>Dashboard</h2></p><strong>File:</strong> <code>dashboard.php</code>  
+<strong>Access:</strong> All authenticated users</p><h2>Description</h2>
+The Dashboard is the landing page after login. It provides a real-time summary of key metrics, recent activity, and quick-action shortcuts.</p><h2>Sections</h2></p><h3>1. Statistics Cards</h3>
+<table>
+<thead>
+<tr>
+<th>Card</th>
+<th>Description</th>
+<th>Source Table</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total Members</td>
+<td>Count of active members</td>
+<td><code>members</code></td>
+</tr>
+<tr>
+<td>Total Contributions</td>
+<td>Sum of all contributions</td>
+<td><code>contributions</code></td>
+</tr>
+<tr>
+<td>Active Loans</td>
+<td>Count of active (disbursed, not fully repaid) loans</td>
+<td><code>loans</code></td>
+</tr>
+<tr>
+<td>Total Shares</td>
+<td>Sum of all share purchases</td>
+<td><code>share_purchases</code></td>
+</tr>
+<tr>
+<td>Pending Approvals</td>
+<td>Count of members pending approval</td>
+<td><code>members</code></td>
+</tr>
+<tr>
+<td>Upcoming Meetings</td>
+<td>Next scheduled meeting</td>
+<td><code>meetings</code></td>
+</tr>
+</tbody>
+</table></p><h3>2. Recent Activity Feed</h3>
+<ul><li>Displays last 10 actions from <code>audit_logs</code></li>
+<li>Shows user, action description, timestamp</li>
+<li>Auto-refreshes every 60 seconds</li>
+</ul>
+<h3>3. Quick Action Buttons</h3>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+<th>Permission Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Add Member</td>
+<td>Opens member creation form</td>
+<td><code>manage_members</code></td>
+</tr>
+<tr>
+<td>Record Contribution</td>
+<td>Opens contribution form</td>
+<td><code>manage_contributions</code></td>
+</tr>
+<tr>
+<td>Schedule Meeting</td>
+<td>Opens meeting form</td>
+<td><code>manage_meetings</code></td>
+</tr>
+<tr>
+<td>View Reports</td>
+<td>Goes to reports page</td>
+<td><code>view_reports</code></td>
+</tr>
+</tbody>
+</table></p><h3>4. Charts (if configured)</h3>
+<ul><li>Monthly contribution trends (bar chart)</li>
+<li>Loan distribution by status (pie chart)</li>
+<li>Member growth over time (line chart)</li>
+</ul>
+<h2>Data Sources</h2>
+All dashboard data is fetched via AJAX from <code>ajax/dashboard-stats.php</code>. Charts use Chart.js CDN.</p><h2>Roles & Visibility</h2>
+<ul><li><strong>Super Admin:</strong> All cards + all quick actions</li>
+<li><strong>Admin:</strong> All cards + all quick actions</li>
+<li><strong>Chairperson/Treasurer:</strong> Financial cards hidden; approval card shown</li>
+<li><strong>Secretary:</strong> Meeting-focused view</li>
+<li><strong>Member:</strong> Own contributions, shares, loan balance only</li>
+<li><strong>Auditor:</strong> Read-only cards</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-members">
+  <h2>Members</h2></p><strong>File:</strong> <code>members.php</code>  
+<strong>Access:</strong> Super Admin, Admin, Chairperson, Secretary</p><h2>Description</h2>
+Manages member records including personal details, contact info, photos, and approval workflow. One-to-one relationship with user accounts.</p><h2>DataTable Columns</h2></p><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Member No</td>
+<td>Text</td>
+<td>Auto-generated unique identifier</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Photo</td>
+<td>Image</td>
+<td>Member profile photo</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Full Name</td>
+<td>Text</td>
+<td>First + Last name</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Phone</td>
+<td>Text</td>
+<td>Primary phone number</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Location</td>
+<td>Text</td>
+<td>County + Constituency</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Status</td>
+<td>Badge</td>
+<td>draft/pending_verification/email_verified/pending_approval/active/suspended/terminated</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Joined</td>
+<td>Date</td>
+<td>Registration date</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Actions</td>
+<td>Buttons</td>
+<td>View, Edit, Approve, Suspend, Delete</td>
+</tr>
+</tbody>
+</table></p><h2>Form Fields — Add/Edit Member</h2></p><h3>Personal Information Tab</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>First Name</td>
+<td>Text</td>
+<td>Yes</td>
+<td>2-100 chars, letters only</td>
+</tr>
+<tr>
+<td>Last Name</td>
+<td>Text</td>
+<td>Yes</td>
+<td>2-100 chars, letters only</td>
+</tr>
+<tr>
+<td>Email</td>
+<td>Email</td>
+<td>No</td>
+<td>Valid email format, unique</td>
+</tr>
+<tr>
+<td>Phone</td>
+<td>Tel</td>
+<td>No</td>
+<td>Valid phone format</td>
+</tr>
+<tr>
+<td>ID Number</td>
+<td>Text</td>
+<td>No</td>
+<td>Alphanumeric</td>
+</tr>
+<tr>
+<td>Date of Birth</td>
+<td>Date</td>
+<td>No</td>
+<td>Must be past date</td>
+</tr>
+<tr>
+<td>Gender</td>
+<td>Select</td>
+<td>No</td>
+<td>Male/Female/Other</td>
+</tr>
+<tr>
+<td>Photo</td>
+<td>File</td>
+<td>No</td>
+<td>jpg/png, max 2MB</td>
+</tr>
+</tbody>
+</table></p><h3>Contact Information Tab</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>County</td>
+<td>Select</td>
+<td>Yes</td>
+<td>From counties table</td>
+</tr>
+<tr>
+<td>Sub-County</td>
+<td>Select</td>
+<td>Yes</td>
+<td>Filters by county</td>
+</tr>
+<tr>
+<td>Ward</td>
+<td>Select</td>
+<td>Yes</td>
+<td>Filters by sub-county</td>
+</tr>
+<tr>
+<td>Constituency</td>
+<td>Text</td>
+<td>No</td>
+<td>Free text</td>
+</tr>
+<tr>
+<td>Postal Address</td>
+<td>Text</td>
+<td>No</td>
+<td>Free text</td>
+</tr>
+<tr>
+<td>Emergency Contact</td>
+<td>Text</td>
+<td>No</td>
+<td>Name + phone</td>
+</tr>
+</tbody>
+</table></p><h3>Membership Tab</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Member No</td>
+<td>Text</td>
+<td>Auto</td>
+<td>Auto-generated</td>
+</tr>
+<tr>
+<td>Group Code</td>
+<td>Text</td>
+<td>Yes</td>
+<td>Defaults to CHAMA001</td>
+</tr>
+<tr>
+<td>Join Date</td>
+<td>Date</td>
+<td>Yes</td>
+<td>Defaults to today</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Select</td>
+<td>Yes</td>
+<td>draft/active/suspended/terminated</td>
+</tr>
+</tbody>
+</table></p><h2>Actions</h2></p><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+<th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Add Member</strong></td>
+<td>Opens empty form modal</td>
+<td><code>manage_members</code></td>
+</tr>
+<tr>
+<td><strong>Edit</strong> (pencil)</td>
+<td>Opens form pre-filled with member data</td>
+<td><code>manage_members</code></td>
+</tr>
+<tr>
+<td><strong>View</strong> (eye)</td>
+<td>Read-only detail view</td>
+<td><code>manage_members</code></td>
+</tr>
+<tr>
+<td><strong>Approve</strong> (check)</td>
+<td>Approval card with password fields for auto-creating user</td>
+<td><code>manage_members</code></td>
+</tr>
+<tr>
+<td><strong>Suspend/Activate</strong></td>
+<td>Toggle member status, syncs linked user status</td>
+<td><code>manage_members</code></td>
+</tr>
+<tr>
+<td><strong>Delete</strong> (trash)</td>
+<td>Only if no linked transactions exist</td>
+<td><code>manage_members</code></td>
+</tr>
+</tbody>
+</table></p><h2>Approval Workflow</h2>
+1. Member registers via public form (<code>register.php</code>)
+2. Admin opens member record → clicks <strong>Approve</strong>
+3. Enters admin password + confirm password for the new user
+4. System calls <code>createUserFromMember()</code> — generates unique username, hashes password, inserts user with FK
+5. System calls <code>sendCredentialsEmail()</code> — HTML email with login credentials + login button link
+6. Member status → <code>active</code>; linked user status → <code>active</code></p><h2>Related Modules</h2>
+<ul><li>[Users](users.md) — Linked user accounts</li>
+<li>[Profile](profile.md) — Member self-service view</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-users">
+  <h2>Users</h2></p><strong>File:</strong> <code>users.php</code>  
+<strong>Access:</strong> Super Admin, Admin</p><h2>Description</h2>
+Manages user accounts for system login. Users are linked to members (one-to-one via <code>member_id</code> FK). A user can be created automatically during member approval or manually here.</p><h2>DataTable Columns</h2></p><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Username</td>
+<td>Text</td>
+<td>Unique login name</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Email</td>
+<td>Text</td>
+<td>Login email</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Member</td>
+<td>Link</td>
+<td>Linked member name (if any)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Role</td>
+<td>Badge</td>
+<td>Role name from roles table</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Status</td>
+<td>Badge</td>
+<td>active/inactive/suspended</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Last Login</td>
+<td>DateTime</td>
+<td>Last successful login</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Actions</td>
+<td>Buttons</td>
+<td>Edit, Reset Password, Delete</td>
+</tr>
+</tbody>
+</table></p><h2>Form Fields — Add/Edit User</h2></p><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Username</td>
+<td>Text</td>
+<td>Yes</td>
+<td>3-50 chars, unique</td>
+</tr>
+<tr>
+<td>Email</td>
+<td>Email</td>
+<td>Yes</td>
+<td>Valid email, unique</td>
+</tr>
+<tr>
+<td>Password</td>
+<td>Password</td>
+<td>Yes (add)</td>
+<td>Min 8 chars, complex</td>
+</tr>
+<tr>
+<td>Confirm Password</td>
+<td>Password</td>
+<td>Yes (add)</td>
+<td>Must match password</td>
+</tr>
+<tr>
+<td>Role</td>
+<td>Select</td>
+<td>Yes</td>
+<td>From roles table</td>
+</tr>
+<tr>
+<td>Member</td>
+<td>Select2</td>
+<td>No</td>
+<td>Search/select from members</td>
+</tr>
+<tr>
+<td>Group Code</td>
+<td>Text</td>
+<td>Yes</td>
+<td>Defaults to CHAMA001</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Select</td>
+<td>Yes</td>
+<td>active/inactive/suspended</td>
+</tr>
+</tbody>
+</table></p><h2>Actions</h2></p><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+<th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Add User</strong></td>
+<td>Opens creation form</td>
+<td><code>manage_users</code></td>
+</tr>
+<tr>
+<td><strong>Edit</strong></td>
+<td>Opens edit form (password optional)</td>
+<td><code>manage_users</code></td>
+</tr>
+<tr>
+<td><strong>Reset Password</strong></td>
+<td>Sends password reset email</td>
+<td><code>manage_users</code></td>
+</tr>
+<tr>
+<td><strong>Delete</strong></td>
+<td>Removes user (cannot delete self)</td>
+<td><code>manage_users</code></td>
+</tr>
+</tbody>
+</table></p><h2>Role Assignment</h2>
+Roles are stored in the <code>roles</code> table:
+<ul><li>1: Super Admin, 2: Admin, 3: Chairperson, 4: Secretary</li>
+<li>5: Treasurer, 6: Loan Officer, 7: Member, 8: Auditor, 9: Guest</li>
+</ul>
+<h2>Auto-Creation</h2>
+During member approval (<code>members.php</code>), <code>createUserFromMember()</code>:
+1. Generates username from first name + random suffix
+2. Hashes the provided password
+3. Sets <code>member_id</code> FK
+4. Assigns <code>role_id = 7</code> (Member)
+5. Sets <code>group_code</code> from member's group</p><h2>Related Modules</h2>
+<ul><li>[Members](members.md) — Linked member records</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-meetings">
+  <h2>Meetings</h2></p><strong>File:</strong> <code>meetings.php</code>  
+<strong>Access:</strong> Super Admin, Admin, Chairperson, Secretary</p><h2>Description</h2>
+Schedule and manage group meetings. Tracks attendance, minutes, and meeting outcomes.</p><h2>DataTable Columns</h2></p><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Title</td>
+<td>Text</td>
+<td>Meeting title</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Date</td>
+<td>Date</td>
+<td>Scheduled date</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Time</td>
+<td>Time</td>
+<td>Start time</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Venue</td>
+<td>Text</td>
+<td>Location</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Agenda</td>
+<td>Text</td>
+<td>Key agenda items</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Status</td>
+<td>Badge</td>
+<td>scheduled/ongoing/completed/cancelled</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Actions</td>
+<td>Buttons</td>
+<td>View, Edit, Attendance, Delete</td>
+</tr>
+</tbody>
+</table></p><h2>Form Fields — Add/Edit Meeting</h2></p><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Title</td>
+<td>Text</td>
+<td>Yes</td>
+<td>3-200 chars</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>Date</td>
+<td>Yes</td>
+<td>Must be valid date</td>
+</tr>
+<tr>
+<td>Time</td>
+<td>Time</td>
+<td>Yes</td>
+<td>Valid time format</td>
+</tr>
+<tr>
+<td>Venue</td>
+<td>Text</td>
+<td>Yes</td>
+<td>3-255 chars</td>
+</tr>
+<tr>
+<td>Agenda</td>
+<td>Textarea</td>
+<td>No</td>
+<td>Max 2000 chars</td>
+</tr>
+<tr>
+<td>Minutes</td>
+<td>Textarea</td>
+<td>No</td>
+<td>Meeting notes (after meeting)</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Select</td>
+<td>Yes</td>
+<td>scheduled/ongoing/completed/cancelled</td>
+</tr>
+</tbody>
+</table></p><h2>Actions</h2></p><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Schedule Meeting</strong></td>
+<td>Creates new meeting</td>
+</tr>
+<tr>
+<td><strong>Edit</strong></td>
+<td>Modify meeting details</td>
+</tr>
+<tr>
+<td><strong>Attendance</strong></td>
+<td>Mark member attendance</td>
+</tr>
+<tr>
+<td><strong>View Minutes</strong></td>
+<td>Read meeting minutes</td>
+</tr>
+<tr>
+<td><strong>Cancel</strong></td>
+<td>Change status to cancelled</td>
+</tr>
+<tr>
+<td><strong>Delete</strong></td>
+<td>Remove meeting (only if no attendance records)</td>
+</tr>
+</tbody>
+</table></p><h2>Related Modules</h2>
+<ul><li>[Dashboard](dashboard.md) — Upcoming meetings shown</li>
+<li>Reports — Meeting attendance reports</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-contributions">
+  <h2>Contributions</h2></p><strong>File:</strong> <code>contributions.php</code>  
+<strong>Access:</strong> Super Admin, Admin, Treasurer</p><h2>Description</h2>
+Records member contributions (savings). Per-member tracking with date, amount, and payment method.</p><h2>DataTable Columns</h2></p><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Receipt No</td>
+<td>Text</td>
+<td>Auto-generated receipt</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Member</td>
+<td>Text</td>
+<td>Member name</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Amount</td>
+<td>Currency</td>
+<td>Contribution amount</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Method</td>
+<td>Badge</td>
+<td>Cash/Bank/M-Pesa/Cheque</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Date</td>
+<td>Date</td>
+<td>Contribution date</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Reference</td>
+<td>Text</td>
+<td>Transaction reference</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Status</td>
+<td>Badge</td>
+<td>confirmed/pending/cancelled</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Actions</td>
+<td>Buttons</td>
+<td>View, Edit, Receipt, Delete</td>
+</tr>
+</tbody>
+</table></p><h2>Form Fields — Add/Edit Contribution</h2></p><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Member</td>
+<td>Select2</td>
+<td>Yes</td>
+<td>Search from active members</td>
+</tr>
+<tr>
+<td>Amount</td>
+<td>Number</td>
+<td>Yes</td>
+<td>> 0, 2 decimal places</td>
+</tr>
+<tr>
+<td>Payment Method</td>
+<td>Select</td>
+<td>Yes</td>
+<td>Cash/Bank/M-Pesa/Cheque</td>
+</tr>
+<tr>
+<td>Payment Date</td>
+<td>Date</td>
+<td>Yes</td>
+<td>Defaults to today</td>
+</tr>
+<tr>
+<td>Reference</td>
+<td>Text</td>
+<td>No</td>
+<td>Transaction ID/cheque no</td>
+</tr>
+<tr>
+<td>Receipt No</td>
+<td>Text</td>
+<td>Auto</td>
+<td>Auto-generated</td>
+</tr>
+<tr>
+<td>Notes</td>
+<td>Textarea</td>
+<td>No</td>
+<td>Max 1000 chars</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Select</td>
+<td>Yes</td>
+<td>confirmed/pending/cancelled</td>
+</tr>
+</tbody>
+</table></p><h2>Actions</h2></p><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Record Contribution</strong></td>
+<td>New contribution entry</td>
+</tr>
+<tr>
+<td><strong>Print Receipt</strong></td>
+<td>Generates printable receipt</td>
+</tr>
+<tr>
+<td><strong>Edit</strong></td>
+<td>Modify contribution details</td>
+</tr>
+<tr>
+<td><strong>Cancel</strong></td>
+<td>Change status to cancelled</td>
+</tr>
+<tr>
+<td><strong>Export</strong></td>
+<td>Export to CSV/Excel</td>
+</tr>
+</tbody>
+</table></p><h2>Related Modules</h2>
+<ul><li>Reports — Contribution summaries by member, date range</li>
+<li>Members — Member balance overview on dashboard</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-loans">
+  <h2>Loans</h2></p><strong>File:</strong> <code>loans.php</code>  
+<strong>Access:</strong> Super Admin, Admin, Chairperson, Treasurer, Loan Officer</p><h2>Description</h2>
+Complete loan management: application, approval, disbursement, repayment, and tracking.</p><h2>DataTable Columns</h2></p><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Loan No</td>
+<td>Text</td>
+<td>Auto-generated loan number</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Member</td>
+<td>Text</td>
+<td>Member name</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Amount</td>
+<td>Currency</td>
+<td>Principal amount</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Interest</td>
+<td>Percentage</td>
+<td>Interest rate</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Duration</td>
+<td>Months</td>
+<td>Repayment period</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Status</td>
+<td>Badge</td>
+<td>pending/approved/disbursed/repaying/fully_paid/defaulted/written_off</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Balance</td>
+<td>Currency</td>
+<td>Remaining balance</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Actions</td>
+<td>Buttons</td>
+<td>View, Edit, Approve, Disburse, Repay, Delete</td>
+</tr>
+</tbody>
+</table></p><h2>Form Fields — Add/Edit Loan</h2></p><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Member</td>
+<td>Select2</td>
+<td>Yes</td>
+<td>Search from active members</td>
+</tr>
+<tr>
+<td>Loan Amount</td>
+<td>Number</td>
+<td>Yes</td>
+<td>Must be > 0</td>
+</tr>
+<tr>
+<td>Interest Rate</td>
+<td>Number</td>
+<td>Yes</td>
+<td>Percentage (default from settings)</td>
+</tr>
+<tr>
+<td>Duration (Months)</td>
+<td>Number</td>
+<td>Yes</td>
+<td>1-120</td>
+</tr>
+<tr>
+<td>Purpose</td>
+<td>Textarea</td>
+<td>No</td>
+<td>Loan purpose description</td>
+</tr>
+<tr>
+<td>Disbursement Date</td>
+<td>Date</td>
+<td>Conditional</td>
+<td>Required for disbursed status</td>
+</tr>
+<tr>
+<td>Repayment Method</td>
+<td>Select</td>
+<td>Yes</td>
+<td>Monthly/Lump Sum</td>
+</tr>
+<tr>
+<td>Guarantor</td>
+<td>Select2</td>
+<td>No</td>
+<td>Optional guarantor member</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Select</td>
+<td>Yes</td>
+<td>Based on workflow</td>
+</tr>
+</tbody>
+</table></p><h2>Loan Workflow</h2></p><p>1. <strong>Application</strong> → status = <code>pending</code>
+2. <strong>Approval</strong> → status = <code>approved</code> (requires permission)
+3. <strong>Disbursement</strong> → status = <code>disbursed</code> (records date, creates repayment schedule)
+4. <strong>Repayment</strong> → status = <code>repaying</code> (partial payments recorded)
+5. <strong>Full Payment</strong> → status = <code>fully_paid</code> (auto when balance = 0)
+6. <strong>Default</strong> → status = <code>defaulted</code> (manually or after missed payments)</p><h2>Actions</h2></p><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Apply</strong></td>
+<td>New loan application</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>Approve</strong></td>
+<td>Approve pending loan</td>
+<td>status = pending</td>
+</tr>
+<tr>
+<td><strong>Disburse</strong></td>
+<td>Disburse approved loan</td>
+<td>status = approved</td>
+</tr>
+<tr>
+<td><strong>Record Repayment</strong></td>
+<td>Record payment</td>
+<td>status = disbursed/repaying</td>
+</tr>
+<tr>
+<td><strong>View Schedule</strong></td>
+<td>View amortization</td>
+<td>status >= disbursed</td>
+</tr>
+<tr>
+<td><strong>Print Statement</strong></td>
+<td>Member statement</td>
+<td>Any status</td>
+</tr>
+<tr>
+<td><strong>Write Off</strong></td>
+<td>Write off bad loan</td>
+<td>status = defaulted</td>
+</tr>
+<tr>
+<td><strong>Delete</strong></td>
+<td>Remove loan</td>
+<td>status = pending only</td>
+</tr>
+</tbody>
+</table></p><h2>Related Modules</h2>
+<ul><li>[Contributions](contributions.md) — Member savings linked to loan eligibility</li>
+<li>[Dashboard](dashboard.md) — Active loan summary</li>
+<li>Reports — Loan portfolio reports</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-share-products">
+  <h2>Share Products</h2></p><strong>File:</strong> <code>share-products.php</code>  
+<strong>Access:</strong> Super Admin, Admin, Treasurer</p><h2>Description</h2>
+Defines share products that members can purchase. Each product has a name, description, price per share, and maximum shares per member.</p><h2>DataTable Columns</h2></p><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Product Name</td>
+<td>Text</td>
+<td>Name of the share product</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Description</td>
+<td>Text</td>
+<td>Short description</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Price Per Share</td>
+<td>Currency</td>
+<td>Cost per share</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Max Per Member</td>
+<td>Number</td>
+<td>Maximum shares a member can hold</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Total Sold</td>
+<td>Number</td>
+<td>Total shares purchased (all members)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Status</td>
+<td>Badge</td>
+<td>active/inactive</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Actions</td>
+<td>Buttons</td>
+<td>Edit, Activate/Deactivate, Delete</td>
+</tr>
+</tbody>
+</table></p><h2>Form Fields — Add/Edit Product</h2></p><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Product Name</td>
+<td>Text</td>
+<td>Yes</td>
+<td>3-200 chars, unique</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>Textarea</td>
+<td>No</td>
+<td>Max 1000 chars</td>
+</tr>
+<tr>
+<td>Price Per Share</td>
+<td>Number</td>
+<td>Yes</td>
+<td>> 0, 2 decimal places</td>
+</tr>
+<tr>
+<td>Max Per Member</td>
+<td>Number</td>
+<td>Yes</td>
+<td>> 0</td>
+</tr>
+<tr>
+<td>Group Code</td>
+<td>Text</td>
+<td>Yes</td>
+<td>Defaults to CHAMA001</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Select</td>
+<td>Yes</td>
+<td>active/inactive</td>
+</tr>
+</tbody>
+</table></p><h2>Actions</h2></p><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Add Product</strong></td>
+<td>New share product</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>Edit</strong></td>
+<td>Modify product</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>Activate/Deactivate</strong></td>
+<td>Toggle product status</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>Delete</strong></td>
+<td>Remove product</td>
+<td>Only if no purchases exist (otherwise deactivate instead)</td>
+</tr>
+</tbody>
+</table></p><h2>Validation Rules</h2>
+<ul><li>Product name must be unique within the group</li>
+<li>Max per member must be >= 1</li>
+<li>Price must be > 0</li>
+<li>Cannot delete product with existing purchases — system suggests deactivation</li>
+</ul>
+<h2>Related Modules</h2>
+<ul><li>[Share Purchases](shares.md) — Members buy shares of these products</li>
+<li>[Dividends](dividends.md) — Dividends are declared per product</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-share-purchases">
+  <h2>Share Purchases</h2></p><strong>File:</strong> <code>shares.php</code>  
+<strong>Access:</strong> Super Admin, Admin, Treasurer (view all); Members (view own)</p><h2>Description</h2>
+Members purchase shares from available products. Features multi-product support, per-product + cumulative max validation, certificate auto-generation, and cancellation.</p><h2>DataTable Columns (Fixed 8 columns — TN-18 safe)</h2></p><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Certificate No</td>
+<td>Text</td>
+<td>Auto-generated (CERT-YYYY-NNNN)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Member</td>
+<td>Text</td>
+<td>Member name</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Product</td>
+<td>Text</td>
+<td>Share product name</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Quantity</td>
+<td>Number</td>
+<td>Number of shares purchased</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Total Amount</td>
+<td>Currency</td>
+<td>Quantity × Price Per Share</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Purchase Date</td>
+<td>Date</td>
+<td>Date of purchase</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Status</td>
+<td>Badge</td>
+<td>active/cancelled</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Actions</td>
+<td>Buttons</td>
+<td>View Certificate, Cancel</td>
+</tr>
+</tbody>
+</table></p><h3>Notes</h3>
+<ul><li>Actions column is <strong>always present</strong> (8 columns unconditional)</li>
+<li>Permission check is inside <code><td></code> content — column count never changes</li>
+<li><code>$.fn.DataTable.isDataTable()</code> guard prevents double-initialization</li>
+</ul>
+<h2>Form Fields — Buy Shares (Modal)</h2></p><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Member</td>
+<td>Select2</td>
+<td>Yes</td>
+<td>Search from active members</td>
+</tr>
+<tr>
+<td>Product</td>
+<td>Select</td>
+<td>Yes</td>
+<td>Only active products shown</td>
+</tr>
+<tr>
+<td>Quantity</td>
+<td>Number</td>
+<td>Yes</td>
+<td>Min 1; ≤ product max_per_member minus current holdings</td>
+</tr>
+<tr>
+<td>Amount</td>
+<td>Display</td>
+<td>Auto</td>
+<td>Quantity × Price Per Share (calculated)</td>
+</tr>
+<tr>
+<td>Payment Method</td>
+<td>Select</td>
+<td>Yes</td>
+<td>Cash/Bank/M-Pesa/Cheque</td>
+</tr>
+<tr>
+<td>Payment Reference</td>
+<td>Text</td>
+<td>No</td>
+<td>Optional reference</td>
+</tr>
+<tr>
+<td>Notes</td>
+<td>Textarea</td>
+<td>No</td>
+<td>Max 500 chars</td>
+</tr>
+</tbody>
+</table></p><h2>Certificate Auto-Generation</h2>
+<ul><li>Format: <code>CERT-YYYY-NNNN</code> (Year + 4-digit sequential)</li>
+<li>Automatically generated on purchase</li>
+<li>Printable from Actions → View Certificate</li>
+</ul>
+<h2>Validation Rules</h2>
+<ul><li>Cumulative shares per product cannot exceed <code>max_per_member</code></li>
+<li>Quantity must be ≥ 1</li>
+<li>Cannot cancel if dividends have been paid on these shares</li>
+</ul>
+<h2>Actions</h2></p><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Buy Shares</strong></td>
+<td>Opens purchase modal</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>View Certificate</strong></td>
+<td>Opens certificate modal with print button</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>Cancel</strong></td>
+<td>Changes status to cancelled</td>
+<td>Only active shares</td>
+</tr>
+</tbody>
+</table></p><h2>Related Modules</h2>
+<ul><li>[Share Products](share-products.md) — Product definitions</li>
+<li>[Dividends](dividends.md) — Dividend payments on shares</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-dividends">
+  <h2>Dividends</h2></p><strong>File:</strong> <code>dividends.php</code>  
+<strong>Access:</strong> Super Admin, Admin, Treasurer</p><h2>Description</h2>
+Declare, pay, and cancel dividends on share products. Automatically calculates total from active shares and creates payment records per shareholder.</p><h2>Dividend Cards Layout</h2>
+Each declared dividend is displayed as a card with:
+<ul><li>Product name, per-share amount, financial year, total amount</li>
+<li>Status badge: declared/paid/cancelled</li>
+<li>Collapsible payment breakdown per member</li>
+</ul>
+<h2>Form Fields — Declare Dividend (Modal)</h2></p><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Product</td>
+<td>Select</td>
+<td>Yes</td>
+<td>Only products with active shares</td>
+</tr>
+<tr>
+<td>Per Share Amount</td>
+<td>Number</td>
+<td>Yes</td>
+<td>> 0</td>
+</tr>
+<tr>
+<td>Financial Year</td>
+<td>Text</td>
+<td>Yes</td>
+<td>e.g., 2025-2026</td>
+</tr>
+<tr>
+<td>Total Amount</td>
+<td>Display</td>
+<td>Auto</td>
+<td>Per Share Amount × Total Active Shares</td>
+</tr>
+<tr>
+<td>Group Code</td>
+<td>Text</td>
+<td>Yes</td>
+<td>Defaults to CHAMA001</td>
+</tr>
+</tbody>
+</table></p><h2>Auto-Creation Process</h2>
+On declaring a dividend:
+1. System queries all active share purchases for the selected product
+2. For each shareholder: <code>dividend_payment</code> record created with:
+   - <code>member_id</code>, <code>share_purchase_id</code>, <code>dividend_id</code>
+   - <code>shares_owned</code> = quantity from purchase
+   - <code>amount_due</code> = shares_owned × per_share_amount
+   - <code>status</code> = <code>pending</code>
+3. Dividend total = sum of all <code>amount_due</code></p><h2>Actions</h2></p><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Declare Dividend</strong></td>
+<td>Opens declaration modal</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>Pay Dividend</strong></td>
+<td>Batch pay all pending payments</td>
+<td>status = declared</td>
+</tr>
+<tr>
+<td><strong>Cancel Dividend</strong></td>
+<td>Cancel entire dividend</td>
+<td>status = declared (→ cancelled; pending payments → cancelled)</td>
+</tr>
+<tr>
+<td><strong>View Payments</strong></td>
+<td>Expand collapsible breakdown</td>
+<td>Any status</td>
+</tr>
+</tbody>
+</table></p><h2>Payment Column Distribution</h2>
+When Pay is triggered:
+<ul><li>All <code>dividend_payments</code> with status <code>pending</code> → <code>paid</code></li>
+<li>Dividend status <code>declared</code> → <code>paid</code></li>
+<li>Future enhancement: individual payment marking</li>
+</ul>
+<h2>Member View</h2>
+Members see their own dividend payments (amount_due, status, pay date) through their profile or a dedicated member view on this page (not yet implemented).</p><h2>Related Modules</h2>
+<ul><li>[Share Products](share-products.md) — Product definitions</li>
+<li>[Share Purchases](shares.md) — Share ownership records</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-accounting---income">
+  <h2>Accounting - Income</h2></p><strong>File:</strong> <code>accounting/income.php</code>  
+<strong>Access:</strong> Super Admin, Admin, Treasurer</p><h2>Description</h2>
+Records all income transactions for the group. Part of the double-entry accounting system.</p><h2>DataTable Columns</h2></p><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Date</td>
+<td>Date</td>
+<td>Transaction date</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Description</td>
+<td>Text</td>
+<td>Income description</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Category</td>
+<td>Text</td>
+<td>Income category</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Amount</td>
+<td>Currency</td>
+<td>Income amount</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Payment Method</td>
+<td>Text</td>
+<td>Cash/Bank/M-Pesa</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Reference</td>
+<td>Text</td>
+<td>Transaction reference</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Status</td>
+<td>Badge</td>
+<td>confirmed/pending/cancelled</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Actions</td>
+<td>Buttons</td>
+<td>Edit, Receipt, Delete</td>
+</tr>
+</tbody>
+</table></p><h2>Form Fields — Add Income</h2></p><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Date</td>
+<td>Date</td>
+<td>Yes</td>
+<td>Valid date</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>Text</td>
+<td>Yes</td>
+<td>3-500 chars</td>
+</tr>
+<tr>
+<td>Category</td>
+<td>Select</td>
+<td>Yes</td>
+<td>From income_categories table</td>
+</tr>
+<tr>
+<td>Amount</td>
+<td>Number</td>
+<td>Yes</td>
+<td>> 0</td>
+</tr>
+<tr>
+<td>Payment Method</td>
+<td>Select</td>
+<td>Yes</td>
+<td>Cash/Bank/M-Pesa/Cheque</td>
+</tr>
+<tr>
+<td>Reference</td>
+<td>Text</td>
+<td>No</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>Notes</td>
+<td>Textarea</td>
+<td>No</td>
+<td>Max 1000 chars</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Select</td>
+<td>Yes</td>
+<td>confirmed/pending/cancelled</td>
+</tr>
+</tbody>
+</table></p><h2>Actions</h2></p><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Add Income</strong></td>
+<td>New income record</td>
+</tr>
+<tr>
+<td><strong>Print Receipt</strong></td>
+<td>Printable receipt</td>
+</tr>
+<tr>
+<td><strong>Edit</strong></td>
+<td>Modify record</td>
+</tr>
+<tr>
+<td><strong>Cancel</strong></td>
+<td>Status → cancelled</td>
+</tr>
+<tr>
+<td><strong>Export</strong></td>
+<td>CSV/Excel export</td>
+</tr>
+</tbody>
+</table></p><h2>Related Modules</h2>
+<ul><li>[Expenses](expenses.md) — Offset expenses</li>
+<li>[Journal](journal.md) — Double-entry posting</li>
+<li>[Trial Balance](trial-balance.md) — Account summary</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-accounting---expenses">
+  <h2>Accounting - Expenses</h2></p><strong>File:</strong> <code>accounting/expenses.php</code>  
+<strong>Access:</strong> Super Admin, Admin, Treasurer</p><h2>Description</h2>
+Records all expense transactions. Supports categorization and receipt attachment.</p><h2>DataTable Columns</h2></p><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Date</td>
+<td>Date</td>
+<td>Expense date</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Description</td>
+<td>Text</td>
+<td>Expense description</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Category</td>
+<td>Text</td>
+<td>Expense category</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Amount</td>
+<td>Currency</td>
+<td>Expense amount</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Payment Method</td>
+<td>Text</td>
+<td>Cash/Bank/M-Pesa</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Reference</td>
+<td>Text</td>
+<td>Receipt/Reference</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Status</td>
+<td>Badge</td>
+<td>confirmed/pending/cancelled</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Actions</td>
+<td>Buttons</td>
+<td>Edit, Receipt, Delete</td>
+</tr>
+</tbody>
+</table></p><h2>Actions</h2></p><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Add Expense</strong></td>
+<td>New expense record</td>
+</tr>
+<tr>
+<td><strong>Upload Receipt</strong></td>
+<td>Attach receipt image</td>
+</tr>
+<tr>
+<td><strong>Print Voucher</strong></td>
+<td>Printable expense voucher</td>
+</tr>
+<tr>
+<td><strong>Edit</strong></td>
+<td>Modify record</td>
+</tr>
+<tr>
+<td><strong>Cancel</strong></td>
+<td>Status → cancelled</td>
+</tr>
+<tr>
+<td><strong>Export</strong></td>
+<td>CSV/Excel export</td>
+</tr>
+</tbody>
+</table></p><h2>Related Modules</h2>
+<ul><li>[Income](income.md) — Offset income</li>
+<li>[Journal](journal.md) — Double-entry posting</li>
+<li>[Trial Balance](trial-balance.md) — Account summary</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-accounting---journal">
+  <h2>Accounting - Journal</h2></p><strong>File:</strong> <code>accounting/journal.php</code>  
+<strong>Access:</strong> Super Admin, Admin, Treasurer</p><h2>Description</h2>
+Double-entry journal entries. Each entry has debits and credits that must balance.</p><h2>DataTable Columns</h2></p><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Journal ID</td>
+<td>Number</td>
+<td>Entry number</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Date</td>
+<td>Date</td>
+<td>Entry date</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Description</td>
+<td>Text</td>
+<td>Narrative</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Account</td>
+<td>Text</td>
+<td>Account name</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Debit</td>
+<td>Currency</td>
+<td>Debit amount</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Credit</td>
+<td>Currency</td>
+<td>Credit amount</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Status</td>
+<td>Badge</td>
+<td>posted/draft/cancelled</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Actions</td>
+<td>Buttons</td>
+<td>View, Edit, Reverse, Delete</td>
+</tr>
+</tbody>
+</table></p><h2>Form Fields — Add Journal Entry</h2></p><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Date</td>
+<td>Date</td>
+<td>Yes</td>
+<td>Valid date</td>
+</tr>
+<tr>
+<td>Description</td>
+<td>Text</td>
+<td>Yes</td>
+<td>3-500 chars</td>
+</tr>
+<tr>
+<td>Entries (lines)</td>
+<td>Dynamic</td>
+<td>Yes</td>
+<td>At least 2 lines</td>
+</tr>
+<tr>
+<td>Account (per line)</td>
+<td>Select</td>
+<td>Yes</td>
+<td>From chart of accounts</td>
+</tr>
+<tr>
+<td>Debit (per line)</td>
+<td>Number</td>
+<td>Conditional</td>
+<td>Must have debit OR credit</td>
+</tr>
+<tr>
+<td>Credit (per line)</td>
+<td>Number</td>
+<td>Conditional</td>
+<td>Must have debit OR credit</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Select</td>
+<td>Yes</td>
+<td>posted/draft</td>
+</tr>
+</tbody>
+</table></p><h3>Validation</h3>
+<ul><li>Total debits must equal total credits</li>
+<li>Each line must have either debit or credit (not both, not neither)</li>
+<li>At least 2 lines required</li>
+</ul>
+<h2>Actions</h2></p><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>New Entry</strong></td>
+<td>Create journal entry</td>
+</tr>
+<tr>
+<td><strong>Post</strong></td>
+<td>Change draft → posted</td>
+</tr>
+<tr>
+<td><strong>Reverse</strong></td>
+<td>Create reversing entry (posted only)</td>
+</tr>
+<tr>
+<td><strong>Edit</strong></td>
+<td>Modify (draft only)</td>
+</tr>
+<tr>
+<td><strong>Delete</strong></td>
+<td>Remove (draft only)</td>
+</tr>
+<tr>
+<td><strong>Export</strong></td>
+<td>CSV/Excel</td>
+</tr>
+</tbody>
+</table></p><h2>Related Modules</h2>
+<ul><li>[Ledger](ledger.md) — Account balances from journal</li>
+<li>[Trial Balance](trial-balance.md) — Account summary</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-accounting---ledger">
+  <h2>Accounting - Ledger</h2></p><strong>File:</strong> <code>accounting/ledger.php</code>  
+<strong>Access:</strong> Super Admin, Admin, Treasurer</p><h2>Description</h2>
+Account ledger view — shows all transactions affecting each account with running balance.</p><h2>DataTable Columns</h2></p><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Date</td>
+<td>Date</td>
+<td>Transaction date</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Journal ID</td>
+<td>Link</td>
+<td>Source journal entry</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Description</td>
+<td>Text</td>
+<td>Transaction narrative</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Debit</td>
+<td>Currency</td>
+<td>Debit amount</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Credit</td>
+<td>Currency</td>
+<td>Credit amount</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Balance</td>
+<td>Currency</td>
+<td>Running balance</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Actions</td>
+<td>Buttons</td>
+<td>View Journal, Drill-down</td>
+</tr>
+</tbody>
+</table></p><h2>Filter Controls</h2>
+<table>
+<thead>
+<tr>
+<th>Filter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Account</td>
+<td>Select</td>
+<td>Filter by chart of accounts</td>
+</tr>
+<tr>
+<td>Date From</td>
+<td>Date</td>
+<td>Start date</td>
+</tr>
+<tr>
+<td>Date To</td>
+<td>Date</td>
+<td>End date</td>
+</tr>
+</tbody>
+</table></p><h2>Features</h2>
+<ul><li>Running balance calculated per transaction</li>
+<li>Account selector filters to specific account</li>
+<li>Date range filtering</li>
+<li>Export to CSV</li>
+</ul>
+<h2>Related Modules</h2>
+<ul><li>[Journal](journal.md) — Source of ledger entries</li>
+<li>[Trial Balance](trial-balance.md) — Period-end summary</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-accounting---trial-balance">
+  <h2>Accounting - Trial Balance</h2></p><strong>File:</strong> <code>accounting/trial-balance.php</code>  
+<strong>Access:</strong> Super Admin, Admin, Treasurer, Auditor</p><h2>Description</h2>
+Period-end trial balance showing all accounts with debit/credit balances.</p><h2>DataTable Columns</h2></p><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Account Code</td>
+<td>Text</td>
+<td>Account code</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Account Name</td>
+<td>Text</td>
+<td>Account name</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Debit</td>
+<td>Currency</td>
+<td>Total debits</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Credit</td>
+<td>Currency</td>
+<td>Total credits</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Balance</td>
+<td>Currency</td>
+<td>Net balance (debit - credit)</td>
+</tr>
+</tbody>
+</table></p><h2>Filter Controls</h2>
+<table>
+<thead>
+<tr>
+<th>Filter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Period From</td>
+<td>Date</td>
+<td>Start of period</td>
+</tr>
+<tr>
+<td>Period To</td>
+<td>Date</td>
+<td>End of period</td>
+</tr>
+</tbody>
+</table></p><h2>Features</h2>
+<ul><li>Debits and credits columns must balance (reported at bottom)</li>
+<li>Net balance (debit - credit) for quick reference</li>
+<li>Period filtering</li>
+<li>Print-friendly view</li>
+</ul>
+<h2>Related Modules</h2>
+<ul><li>[Journal](journal.md) — Source entries</li>
+<li>[Ledger](ledger.md) — Account detail</li>
+<li>[Income](income.md) — Revenue accounts</li>
+<li>[Expenses](expenses.md) — Expense accounts</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-reports">
+  <h2>Reports</h2></p><strong>Files:</strong>
+<ul><li><code>reports/members.php</code> — Member listings</li>
+<li><code>reports/meetings.php</code> — Meeting summaries</li>
+<li><code>reports/loans.php</code> — Loan portfolio</li>
+<li><code>reports/contributions.php</code> — Contribution summaries</li>
+</ul>
+<strong>Access:</strong> Super Admin, Admin, Chairperson, Secretary, Treasurer, Loan Officer, Auditor</p><table>
+<thead>
+<tr>
+<th>Report</th>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Member Report</td>
+<td><code>reports/members.php</code></td>
+<td>All members with status, contact, join date</td>
+</tr>
+<tr>
+<td>Meeting Report</td>
+<td><code>reports/meetings.php</code></td>
+<td>Meeting attendance and minutes</td>
+</tr>
+<tr>
+<td>Loan Report</td>
+<td><code>reports/loans.php</code></td>
+<td>Loan portfolio by status, member</td>
+</tr>
+<tr>
+<td>Contribution Report</td>
+<td><code>reports/contributions.php</code></td>
+<td>Contributions by member, date range</td>
+</tr>
+</tbody>
+</table></p><h2>Common Features (All Reports)</h2></p><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DataTable</td>
+<td>Server-side processed with search, sort, pagination</td>
+</tr>
+<tr>
+<td>Filter</td>
+<td>Date range, status, member filters</td>
+</tr>
+<tr>
+<td>Export</td>
+<td>CSV, Excel, PDF export buttons</td>
+</tr>
+<tr>
+<td>Print</td>
+<td>Print-friendly view</td>
+</tr>
+<tr>
+<td>Column Toggle</td>
+<td>Show/hide columns</td>
+</tr>
+</tbody>
+</table></p><h2>Member Report</h2>
+<h3>Columns</h3>
+Member No, Name, Phone, Email, County, Status, Joined Date</p><h3>Filters</h3>
+<ul><li>Status (active/suspended/terminated)</li>
+<li>County</li>
+<li>Date range (joined)</li>
+</ul>
+<h2>Meeting Report</h2>
+<h3>Columns</h3>
+Title, Date, Time, Venue, Attendance Count, Status</p><h3>Filters</h3>
+<ul><li>Status</li>
+<li>Date range</li>
+</ul>
+<h2>Loan Report</h2>
+<h3>Columns</h3>
+Loan No, Member, Amount, Interest Rate, Duration, Status, Balance, Disbursement Date</p><h3>Filters</h3>
+<ul><li>Status</li>
+<li>Member</li>
+<li>Date range</li>
+</ul>
+<h2>Contribution Report</h2>
+<h3>Columns</h3>
+Receipt No, Member, Amount, Method, Date, Reference, Status</p><h3>Filters</h3>
+<ul><li>Member</li>
+<li>Payment Method</li>
+<li>Date range</li>
+<li>Status</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-settings">
+  <h2>Settings</h2></p><strong>File:</strong> <code>settings.php</code>  
+<strong>Access:</strong> Super Admin only</p><h2>Description</h2>
+Central configuration for the entire system. Organized into tabbed sections.</p><h2>Tabs</h2></p><h3>General</h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Group Name</td>
+<td>Text</td>
+<td>Chama group name</td>
+</tr>
+<tr>
+<td>Group Code</td>
+<td>Text</td>
+<td>Unique group identifier (e.g., CHAMA001)</td>
+</tr>
+<tr>
+<td>Default Currency</td>
+<td>Select</td>
+<td>KES, USD, etc.</td>
+</tr>
+<tr>
+<td>Default Interest Rate</td>
+<td>Number</td>
+<td>Default loan interest rate</td>
+</tr>
+<tr>
+<td>Fiscal Year Start</td>
+<td>Date</td>
+<td>Start of financial year</td>
+</tr>
+<tr>
+<td>Fiscal Year End</td>
+<td>Date</td>
+<td>End of financial year</td>
+</tr>
+</tbody>
+</table></p><h3>Email (SMTP)</h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SMTP Host</td>
+<td>Text</td>
+<td>Mail server hostname</td>
+</tr>
+<tr>
+<td>SMTP Port</td>
+<td>Number</td>
+<td>25, 465, 587</td>
+</tr>
+<tr>
+<td>SMTP Username</td>
+<td>Text</td>
+<td>Authentication username</td>
+</tr>
+<tr>
+<td>SMTP Password</td>
+<td>Password</td>
+<td>Authentication password</td>
+</tr>
+<tr>
+<td>SMTP Encryption</td>
+<td>Select</td>
+<td>None/SSL/TLS</td>
+</tr>
+<tr>
+<td>From Email</td>
+<td>Email</td>
+<td>Sender email address</td>
+</tr>
+<tr>
+<td>From Name</td>
+<td>Text</td>
+<td>Sender display name</td>
+</tr>
+</tbody>
+</table></p><h3>Homepage CMS</h3>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Items Managed</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hero</td>
+<td>Background, title, subtitle, CTA</td>
+<td>Main banner</td>
+</tr>
+<tr>
+<td>About</td>
+<td>Image, text, stats</td>
+<td>About section</td>
+</tr>
+<tr>
+<td>Services</td>
+<td>Cards (icon, title, desc)</td>
+<td>Service offerings</td>
+</tr>
+<tr>
+<td>Stats</td>
+<td>Numbers with labels</td>
+<td>Statistics bar</td>
+</tr>
+<tr>
+<td>Footer Links</td>
+<td>Quick links, service links</td>
+<td>Footer navigation</td>
+</tr>
+<tr>
+<td>Newsletter</td>
+<td>Enable/disable, text</td>
+<td>Newsletter signup</td>
+</tr>
+</tbody>
+</table></p><h3>Security</h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Min Password Length</td>
+<td>Number</td>
+<td>Minimum password characters</td>
+</tr>
+<tr>
+<td>Max Login Attempts</td>
+<td>Number</td>
+<td>Before lockout</td>
+</tr>
+<tr>
+<td>Lockout Time</td>
+<td>Number</td>
+<td>Minutes locked</td>
+</tr>
+<tr>
+<td>Session Timeout</td>
+<td>Number</td>
+<td>Minutes of inactivity</td>
+</tr>
+<tr>
+<td>Enable 2FA</td>
+<td>Toggle</td>
+<td>Two-factor authentication</td>
+</tr>
+</tbody>
+</table></p><h3>Notifications</h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New Member Notification</td>
+<td>Toggle</td>
+<td>Email on registration</td>
+</tr>
+<tr>
+<td>Loan Approval Notification</td>
+<td>Toggle</td>
+<td>Email on loan approval</td>
+</tr>
+<tr>
+<td>Meeting Reminder</td>
+<td>Toggle</td>
+<td>Email before meetings</td>
+</tr>
+<tr>
+<td>Dividend Notification</td>
+<td>Toggle</td>
+<td>Email when dividends declared</td>
+</tr>
+</tbody>
+</table></p><h2>Actions</h2></p><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Save</strong> (per tab)</td>
+<td>Saves settings for current tab</td>
+</tr>
+<tr>
+<td><strong>Restore Defaults</strong></td>
+<td>Reset homepage CMS to defaults</td>
+</tr>
+<tr>
+<td><strong>Test Email</strong></td>
+<td>Send test email to verify SMTP</td>
+</tr>
+<tr>
+<td><strong>Clear Cache</strong></td>
+<td>Clear system cache</td>
+</tr>
+</tbody>
+</table></p><h2>Notes</h2>
+<ul><li>Each tab has its own Save button to prevent cross-tab form conflicts</li>
+<li>CSRF token is refreshed after every AJAX save</li>
+<li>Homepage CMS has preview functionality</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-audit-logs">
+  <h2>Audit Logs</h2></p><strong>File:</strong> <code>audit-logs.php</code>  
+<strong>Access:</strong> Super Admin, Admin, Auditor</p><h2>Description</h2>
+System-wide audit trail tracking all user actions. Immutable log of who did what and when.</p><h2>DataTable Columns</h2></p><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Date/Time</td>
+<td>DateTime</td>
+<td>When action occurred</td>
+</tr>
+<tr>
+<td>2</td>
+<td>User</td>
+<td>Text</td>
+<td>Username who performed action</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Action</td>
+<td>Text</td>
+<td>Action type (create/update/delete/login)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Module</td>
+<td>Text</td>
+<td>Affected module/table</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Record ID</td>
+<td>Number</td>
+<td>Affected record ID</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Old Value</td>
+<td>Text</td>
+<td>Previous value (JSON)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>New Value</td>
+<td>Text</td>
+<td>New value (JSON)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>IP Address</td>
+<td>Text</td>
+<td>User's IP address</td>
+</tr>
+</tbody>
+</table></p><h2>Filter Controls</h2>
+<table>
+<thead>
+<tr>
+<th>Filter</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Date From</td>
+<td>Date</td>
+</tr>
+<tr>
+<td>Date To</td>
+<td>Date</td>
+</tr>
+<tr>
+<td>User</td>
+<td>Select (from users)</td>
+</tr>
+<tr>
+<td>Action</td>
+<td>Select (create/update/delete/login)</td>
+</tr>
+<tr>
+<td>Module</td>
+<td>Select (all tables)</td>
+</tr>
+</tbody>
+</table></p><h2>Features</h2>
+<ul><li>Search across all fields</li>
+<li>Date range filtering</li>
+<li>Export to CSV</li>
+<li>Auto-logging on all CRUD operations via <code>logAudit()</code> function</li>
+<li>Login/logout events tracked</li>
+</ul>
+<h2>Related Modules</h2>
+<ul><li>All modules — every action is logged here</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-contact-messages">
+  <h2>Contact Messages</h2></p><strong>File:</strong> <code>contact-messages.php</code>  
+<strong>Access:</strong> Super Admin, Admin</p><h2>Description</h2>
+Manages messages submitted through the public contact form on the homepage.</p><h2>DataTable Columns</h2></p><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Date</td>
+<td>DateTime</td>
+<td>When submitted</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Name</td>
+<td>Text</td>
+<td>Sender's name</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Email</td>
+<td>Text</td>
+<td>Sender's email</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Subject</td>
+<td>Text</td>
+<td>Message subject</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Status</td>
+<td>Badge</td>
+<td>unread/read/replied</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Actions</td>
+<td>Buttons</td>
+<td>View, Mark Read, Reply, Delete</td>
+</tr>
+</tbody>
+</table></p><h2>Actions</h2></p><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>View</strong></td>
+<td>Opens message detail</td>
+</tr>
+<tr>
+<td><strong>Mark Read/Unread</strong></td>
+<td>Toggle read status</td>
+</tr>
+<tr>
+<td><strong>Reply</strong></td>
+<td>Opens email client to reply</td>
+</tr>
+<tr>
+<td><strong>Delete</strong></td>
+<td>Remove message</td>
+</tr>
+</tbody>
+</table></p><h2>Public Contact Form</h2>
+Located on homepage (<code>index.php</code>) — submits to <code>ajax/contact.php</code> (POST only)</p><h2>Related Modules</h2>
+<ul><li>Settings (SMTP) — Email configuration for reply functionality</li>
+</ul></p></div>
+<div class="page-break"></div>
+<div id="module-profile">
+  <h2>Profile</h2></p><strong>File:</strong> <code>profile.php</code>  
+<strong>Access:</strong> All authenticated users</p><h2>Description</h2>
+User profile page showing personal information, linked member details, and account settings.</p><h2>Sections</h2></p><h3>1. Personal Information</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Source</th>
+<th>Editable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Username</td>
+<td><code>users.username</code></td>
+<td>No</td>
+</tr>
+<tr>
+<td>Email</td>
+<td><code>users.email</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Phone</td>
+<td><code>users.phone</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Photo</td>
+<td><code>users.photo</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Password</td>
+<td>-</td>
+<td>Yes (change password)</td>
+</tr>
+</tbody>
+</table></p><h3>2. Member Information (if linked)</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Member No</td>
+<td><code>members.member_no</code></td>
+</tr>
+<tr>
+<td>Full Name</td>
+<td><code>members.first_name</code> + <code>members.last_name</code></td>
+</tr>
+<tr>
+<td>Photo</td>
+<td><code>members.photo</code></td>
+</tr>
+<tr>
+<td>Status</td>
+<td><code>members.status</code></td>
+</tr>
+<tr>
+<td>Joined</td>
+<td><code>members.created_at</code></td>
+</tr>
+</tbody>
+</table></p><h3>3. Account Security</h3>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Change Password</td>
+<td>Current + new password form</td>
+</tr>
+<tr>
+<td>Two-Factor Auth</td>
+<td>Enable/disable 2FA (if configured)</td>
+</tr>
+<tr>
+<td>Session Management</td>
+<td>View active sessions</td>
+</tr>
+</tbody>
+</table></p><h3>4. Activity Summary</h3>
+<ul><li>Recent contributions</li>
+<li>Active loans</li>
+<li>Share holdings (if any)</li>
+<li>Dividend payments (if any)</li>
+</ul>
+<h2>Actions</h2></p><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Update Profile</strong></td>
+<td>Save personal info changes</td>
+</tr>
+<tr>
+<td><strong>Change Password</strong></td>
+<td>Update password</td>
+</tr>
+<tr>
+<td><strong>Upload Photo</strong></td>
+<td>Change profile picture</td>
+</tr>
+<tr>
+<td><strong>View Member Card</strong></td>
+<td>Printable member card</td>
+</tr>
+<tr>
+<td><strong>View Full Member Profile</strong></td>
+<td>Link to member record (admin only)</td>
+</tr>
+</tbody>
+</table>
+</p></div>
+<div class="page-break"></div>
+
+<!-- Troubleshooting -->
+<h2>Troubleshooting</h2></p><h1>Troubleshooting Guide</h1></p><h2>Login Issues</h2></p><h3>"Invalid email, password, or group code"</h3>
+1. Verify email is correct (check <code>users.email</code>)
+2. Verify password is correct (reset in <code>users.php</code> if needed)
+3. Verify <code>group_code</code> matches the user's record
+4. Check <code>users.status</code> = 'active'
+5. Check <code>members.status</code> = 'active' (if member_id is set)</p><h3>"Account locked"</h3>
+<ul><li>Wait for lockout period to expire (configurable in Settings)</li>
+<li>Admin can reset attempts via database: <code>UPDATE users SET login_attempts = 0, locked_until = NULL WHERE email = ?</code></li>
+</ul>
+<h3>"Account is suspended/inactive"</h3>
+<ul><li>Admin must change status in Users module</li>
+</ul>
+<h3>"Your registration is pending..." (various messages)</h3>
+<ul><li>Member status is not 'active' — check <code>members.status</code></li>
+<li>Complete registration/verification/approval workflow</li>
+</ul>
+<h2>DataTables Issues</h2></p><h3>"Requested unknown parameter" warning</h3>
+<ul><li>Column count mismatch between <code><thead></code> and <code><tbody></code></li>
+<li>Run in browser console: <code>dtHelper.validate('table')</code></li>
+<li>Verify <code><tfoot></code> colspan matches if present</li>
+</ul>
+<h3>"Cannot reinitialise DataTable"</h3>
+<ul><li>Table already initialized. The <code>dtHelper.initAll()</code> skips initialized tables.</li>
+<li>If you need to force re-init: <code>dtHelper.init('#tableId')</code> (destroys first)</li>
+</ul>
+<h3>Missing buttons/sorting</h3>
+<ul><li>Check if <code>no-sort</code> class is on <code><th></code> for action columns</li>
+<li>Ensure <code>dt-helper.js</code> is loaded before <code>main.js</code></li>
+</ul>
+<h2>Page Errors</h2></p><h3>PHP Notice/Warning</h3>
+<ul><li>Check XAMPP error log at <code>C:\xampp\htdocs\chama-system\logs\error.log</code></li>
+<li>Common causes: undefined array keys, null values in queries</li>
+</ul>
+<h3>404 Not Found</h3>
+<table>
+<thead>
+<tr>
+<th>Missing File</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fines.php</td>
+<td>Not implemented</td>
+</tr>
+<tr>
+<td>assets.php</td>
+<td>Not implemented</td>
+</tr>
+<tr>
+<td>data-export.php</td>
+<td>Not implemented</td>
+</tr>
+<tr>
+<td>help.php</td>
+<td>Not implemented</td>
+</tr>
+</tbody>
+</table></p><h3>500 Internal Server Error</h3>
+<ul><li>Check Apache error log</li>
+<li>Common: PHP parse error, database connection failure, missing file include</li>
+</ul>
+<h2>Database Issues</h2></p><h3>"Table doesn't exist"</h3>
+<ul><li>Run <code>migrations/run_007.php</code> and <code>migrations/run_009.php</code> to apply missing schema changes</li>
+<li>Verify database name in <code>config/database.php</code></li>
+</ul>
+<h3>"Unknown column"</h3>
+<ul><li>Schema mismatch — run migration scripts</li>
+<li>Check AGENTS.md for recent schema changes</li>
+</ul>
+<h2>AJAX Issues</h2></p><h3>CSRF token mismatch</h3>
+<ul><li>Refresh the page</li>
+<li>Token is regenerated after each request — DOM is updated via JSON response</li>
+<li>Check that <code>jsonResponse()</code> includes <code>csrf_token</code></li>
+</ul>
+<h3>405 Method Not Allowed</h3>
+<ul><li>AJAX endpoints are POST-only (contact.php, resend-verification.php)</li>
+<li>Use POST method, not GET</li>
+</ul>
+<h2>Browser-Specific</h2></p><h3>jQuery not defined</h3>
+<ul><li>Clear browser cache (old cached pages without jQuery in header)</li>
+<li>Verify <code>views/layouts/header.php</code> loads jQuery before inline scripts</li>
+</ul>
+<h3>Select2 not working</h3>
+<ul><li>Ensure jQuery is loaded first</li>
+<li>Check Select2 CSS/JS are loaded in header.php</li>
+<li>Verify select element has class <code>select2</code> or is initialized in JS</li>
+</ul>
+<h2>SMTP / Email Issues</h2></p><h3>Emails not sending</h3>
+1. Configure SMTP in Settings → Email tab
+2. Click "Test Email" to verify configuration
+3. Check PHP error log for PHPMailer errors
+4. Verify no firewall blocking outbound SMTP</p><h3>Registration emails not received</h3>
+<ul><li>SMTP must be configured first</li>
+<li>Check spam folder</li>
+<li>Verify member email address is correct</li>
+</ul>
+<h2>Performance</h2></p><h3>Slow page loads</h3>
+<ul><li>DataTables with large datasets: use server-side processing (check <code>serverSide</code> option)</li>
+<li>Enable MySQL query caching</li>
+<li>Check for missing indexes on joined columns</li>
+</ul>
+<h3>High memory usage</h3>
+<ul><li>Increase PHP memory_limit in php.ini</li>
+<li>Reduce rows per page in DataTables (default: 25)</li>
+</ul></p>
+<hr>
+<p style="text-align:center;color:#718096;font-size:0.9em;">
+  Generated 2026-07-01 13:50 &mdash; Chama System Documentation
+</p>
+
+</body>
+</html>

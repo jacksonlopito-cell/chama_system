@@ -1,0 +1,44 @@
+# Environment & Config
+.env
+.env.local
+.env.*.local
+*.local.php
+
+# Database config (contains credentials - use database.example.php as template)
+config/database.php
+
+# Dependencies
+vendor/
+node_modules/
+
+# Logs
+logs/
+*.log
+
+# Backups
+backups/
+
+# Uploads (user-generated files)
+uploads/
+!uploads/.gitkeep
+!uploads/**/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# IDE files
+.vscode/
+.idea/
+
+# Temp files
+tmp/
+temp/
+*.tmp
+cookie.txt
+
+

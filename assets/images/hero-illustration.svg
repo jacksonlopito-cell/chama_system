@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <rect width="400" height="300" rx="12" fill="#f0f4ff"/>
+  <circle cx="200" cy="140" r="60" fill="#465fff" opacity="0.15"/>
+  <circle cx="200" cy="140" r="40" fill="#465fff" opacity="0.25"/>
+  <circle cx="200" cy="140" r="20" fill="#465fff" opacity="0.4"/>
+  <path d="M130 180 L270 180 L240 120 L160 120 Z" fill="#161950" opacity="0.1"/>
+  <rect x="140" y="160" width="120" height="6" rx="3" fill="#161950" opacity="0.15"/>
+  <rect x="155" y="175" width="90" height="4" rx="2" fill="#161950" opacity="0.1"/>
+  <circle cx="80" cy="100" r="15" fill="#465fff" opacity="0.08"/>
+  <circle cx="330" cy="80" r="10" fill="#465fff" opacity="0.08"/>
+  <circle cx="320" cy="220" r="12" fill="#465fff" opacity="0.08"/>
+  <text x="200" y="220" text-anchor="middle" font-size="12" fill="#161950" opacity="0.3">Chama System</text>
+</svg>
